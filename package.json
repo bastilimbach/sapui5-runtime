@@ -1,12 +1,13 @@
 {
   "name": "sapui5-runtime",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Downloads the official SAPUI5 runtime for local development",
   "main": "src/index.js",
   "scripts": {
     "postinstall": "node src/install.js",
     "lint": "eslint src/**/*.js",
-    "lint:fix": "eslint --fix src/**/*.js"
+    "lint:fix": "eslint --fix src/**/*.js",
+    "test": "npm run-script lint"
   },
   "repository": "https://github.com/bastilimbach/sapui5.runtime.downloader",
   "bugs": "https://github.com/bastilimbach/sapui5.runtime.downloader/issues",
