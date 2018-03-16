@@ -1,0 +1,39 @@
+{
+  "name": "sapui5-runtime",
+  "version": "1.0.0",
+  "description": "Downloads the official SAPUI5 runtime for local development",
+  "main": "src/index.js",
+  "scripts": {
+    "postinstall": "node src/install.js",
+    "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint --fix src/**/*.js"
+  },
+  "repository": "https://github.com/bastilimbach/sapui5.runtime.downloader",
+  "bugs": "https://github.com/bastilimbach/sapui5.runtime.downloader/issues",
+  "author": "Sebastian Limbach <hello@sebastianlimbach.com>",
+  "license": "MIT",
+  "keywords": [
+    "openui5",
+    "sapui5",
+    "runtime",
+    "local",
+    "sap",
+    "webide",
+    "abap"
+  ],
+  "devDependencies": {
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.9.0"
+  },
+  "dependencies": {
+    "adm-zip": "^0.4.7",
+    "fs-extra": "^5.0.0",
+    "progress": "^2.0.0",
+    "request": "^2.85.0",
+    "request-promise-native": "^1.0.5"
+  },
+  "sapui5": {
+    "version": "latest"
+  }
+}
