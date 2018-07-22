@@ -1,5 +1,8 @@
 {
     "extends": "airbnb-base",
+    "env": {
+        "node": true
+    },
     "rules": {
         "semi": [
             "error",
@@ -8,6 +11,7 @@
         "quotes": [
             "error",
             "single"
-        ]
+        ],
+        "no-console": "off"
     }
 }
