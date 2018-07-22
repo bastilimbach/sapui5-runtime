@@ -29,12 +29,8 @@
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
+    "axios": "^0.18.0",
     "fs-extra": "^5.0.0",
-    "progress": "^2.0.0",
-    "request": "^2.85.0",
-    "request-promise-native": "^1.0.5"
-  },
-  "sapui5": {
-    "version": "latest"
+    "progress": "^2.0.0"
   }
 }
