@@ -8,14 +8,7 @@ $ npm install -D sapui5-runtime
 # - or -
 $ yarn add -D sapui5-runtime
 ```
-This will download and unzip the latest SAPUI5 runtime. If you want to use a specific version you can write your desired version into your `package.json`:
-```json
-"sapui5": {
-    "version": "latest"
-}
-```
-`latest` is the default value and will download the latest stable/maintained release of SAPUI5. You can find all available version [here](https://sapui5.hana.ondemand.com/versionoverview.html).
-Make sure you use the patch version number (e.g `"1.52.7"` instead of `"1.52"`).
+This will download and unzip the latest SAPUI5 runtime.
 
 # Get started
 After a successful installation you can use a server to serve the runtime as static files.
