@@ -53,6 +53,93 @@ const init = async () => {
 init()
 ```
 
+## [Grunt OpenUI5](https://github.com/SAP/grunt-openui5) example
+```javascript
+const sapui5 = require('sapui5-runtime')
+
+module.exports = function (grunt) {
+  grunt.initConfig({
+    connect: {
+      options: {
+        port: 3000,
+        hostname: '*'
+      },
+      src: {},
+      dist: {}
+    },
+    openui5_connect: {
+      options: {
+        resources: [sapui5],
+        cors: {
+          origin: '*'
+        }
+      },
+      src: {
+        options: {
+          appresources: 'webapp'
+        }
+      },
+      dist: {
+        options: {
+          appresources: 'dist'
+        }
+      }
+    },
+    openui5_preload: {
+      component: {
+        options: {
+          resources: {
+            cwd: 'webapp',
+            prefix: 'sap/ui/demo/todo',
+            src: [
+              '**/*.js',
+              '**/*.fragment.html',
+              '**/*.fragment.json',
+              '**/*.fragment.xml',
+              '**/*.view.html',
+              '**/*.view.json',
+              '**/*.view.xml',
+              '**/*.properties',
+              'manifest.json',
+              '!test/**'
+            ]
+          },
+          dest: 'dist'
+        },
+        components: true
+      }
+    },
+    clean: {
+      dist: 'dist',
+    },
+    copy: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: 'webapp',
+          src: [
+            '**',
+            '!test/**'
+          ],
+          dest: 'dist'
+        }]
+      }
+    },
+  })
+
+  grunt.loadNpmTasks('grunt-contrib-connect')
+  grunt.loadNpmTasks('grunt-contrib-clean')
+  grunt.loadNpmTasks('grunt-contrib-copy')
+  grunt.loadNpmTasks('grunt-openui5')
+
+  grunt.registerTask('serve', function (target) {
+    grunt.task.run('openui5_connect:' + (target || 'src') + ':keepalive')
+  })
+  grunt.registerTask('build', ['clean:dist', 'openui5_preload', 'copy'])
+  grunt.registerTask('default', ['serve'])
+}
+```
+
 # Contribution
 I'm happy to accept Pull Requests! Please note that this project is released with a [Contributor Code of Conduct](https://github.com/bastilimbach/sapui5-runtime/blob/master/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
