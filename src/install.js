@@ -91,9 +91,9 @@ const downloadEndpoint = url.parse('https://tools.hana.ondemand.com/additional/'
   const pathToRootPackageJson = path.join(__dirname, '../../../package.json')
   const packageJson = require(pathToRootPackageJson)
 
-  if (packageJson.sapui5Runtime && 'version' in packageJson.sapui5Runtime) {
-    latestVersionURL = url.resolve(downloadEndpoint.href, `sapui5-rt-${packageJson.sapui5Runtime.version}.zip`)
-    libDir = path.resolve(`${__dirname}/../lib/${packageJson.sapui5Runtime.version}`)
+  if (packageJson.sapui5RuntimeVersion) {
+    latestVersionURL = url.resolve(downloadEndpoint.href, `sapui5-rt-${packageJson.sapui5RuntimeVersion}.zip`)
+    libDir = path.resolve(`${__dirname}/../lib/${packageJson.sapui5RuntimeVersion}`)
   }
 
   prepareFileSystem(libDir, downloadDir)
