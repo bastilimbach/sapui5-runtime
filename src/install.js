@@ -79,16 +79,27 @@ async function extractArchive(archive, targetPath) {
   zip.extractAllTo(targetPath, true)
 }
 
-const libDir = path.resolve(`${__dirname}/../lib`)
+let libDir = path.resolve(`${__dirname}/../lib`)
 const downloadDir = path.resolve(`${__dirname}/../tmp`)
 const versionEndpoint = url.parse('https://sapui5.hana.ondemand.com/resources/sap-ui-version.json')
 const downloadEndpoint = url.parse('https://tools.hana.ondemand.com/additional/');
 
 (async () => {
+  let latestVersionURL
+  // Check if a specific Version of UI5 is needed..
+  // we are in node_modules/sapui5-runtime/src and need to go down to project using our module
+  const pathToRootPackageJson = path.join(__dirname, '../../../package.json')
+  const packageJson = require(pathToRootPackageJson)
+
+  if (packageJson.sapui5Runtime && 'version' in packageJson.sapui5Runtime) {
+    latestVersionURL = url.resolve(downloadEndpoint.href, `sapui5-rt-${packageJson.sapui5Runtime.version}.zip`)
+    libDir = path.resolve(`${__dirname}/../lib/${packageJson.sapui5Runtime.version}`)
+  }
+
   prepareFileSystem(libDir, downloadDir)
 
   try {
-    const latestVersionURL = await determineLatestVersionURL(versionEndpoint, downloadEndpoint)
+    if (!latestVersionURL) latestVersionURL = await determineLatestVersionURL(versionEndpoint, downloadEndpoint)
     const sapui5Archive = await downloadSAPUI5(latestVersionURL, downloadDir)
     await extractArchive(sapui5Archive, libDir)
   } catch (error) {
