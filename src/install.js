@@ -88,7 +88,7 @@ const downloadEndpoint = url.parse('https://tools.hana.ondemand.com/additional/'
   let latestVersionURL
   // Check if a specific Version of UI5 is needed..
   // we are in node_modules/sapui5-runtime/src and need to go down to project using our module
-  const packageJson = fs.readJsonSync(path.join(__dirname, '../../../package.json'))
+  const packageJson = fs.readJsonSync(path.join(__dirname, '../../../package.json'), { throws: false })
 
   if (packageJson && packageJson.sapui5RuntimeVersion) {
     latestVersionURL = url.resolve(downloadEndpoint.href, `sapui5-rt-${packageJson.sapui5RuntimeVersion}.zip`)
