@@ -79,7 +79,7 @@ async function extractArchive(archive, targetPath) {
   zip.extractAllTo(targetPath, true)
 }
 
-let libDir = path.resolve(`${__dirname}/../lib`)
+const libDir = path.resolve(`${__dirname}/../lib`)
 const downloadDir = path.resolve(`${__dirname}/../tmp`)
 const versionEndpoint = url.parse('https://sapui5.hana.ondemand.com/resources/sap-ui-version.json')
 const downloadEndpoint = url.parse('https://tools.hana.ondemand.com/additional/');
@@ -91,9 +91,8 @@ const downloadEndpoint = url.parse('https://tools.hana.ondemand.com/additional/'
   const pathToRootPackageJson = path.join(__dirname, '../../../package.json')
   const packageJson = require(pathToRootPackageJson)
 
-  if (packageJson.sapui5RuntimeVersion) {
+  if (packageJson && packageJson.sapui5RuntimeVersion) {
     latestVersionURL = url.resolve(downloadEndpoint.href, `sapui5-rt-${packageJson.sapui5RuntimeVersion}.zip`)
-    libDir = path.resolve(`${__dirname}/../lib/${packageJson.sapui5RuntimeVersion}`)
   }
 
   prepareFileSystem(libDir, downloadDir)
