@@ -14,7 +14,6 @@ try {
   config = {}
 }
 
-
 async function prepareFileSystem(lib, download) {
   await fs.remove(lib)
   fs.mkdirp(lib)
@@ -53,6 +52,7 @@ async function determineLatestVersionURL(versionEndpoint, downloadEndpoint) {
 
 async function downloadSAPUI5(downloadURL, downloadPath) {
   console.warn('By using this npm package you agree to the EULA from SAP: https://tools.hana.ondemand.com/developer-license-3_1.txt/')
+  console.log('Installing SAPUI5...')
   const zipFile = path.join(downloadPath, 'sapui5.zip')
   try {
     const response = await axios.get(downloadURL, {
@@ -93,16 +93,10 @@ const libDir = path.resolve(`${__dirname}/../lib`)
 const downloadDir = path.resolve(`${__dirname}/../tmp`)
 const versionEndpoint = url.parse('https://sapui5.hana.ondemand.com/resources/sap-ui-version.json')
 const downloadEndpoint = url.parse('https://tools.hana.ondemand.com/additional/')
-let latestVersionURL = '';
+let latestVersionURL = ''
 
-(async () => {
+async function installSAPUI5() {
   try {
-    if (!config.version) {
-      latestVersionURL = await determineLatestVersionURL(versionEndpoint, downloadEndpoint)
-    } else {
-      latestVersionURL = url.resolve(downloadEndpoint.href, `sapui5-rt-${config.version}.zip`)
-    }
-
     prepareFileSystem(libDir, downloadDir)
 
     const sapui5Archive = await downloadSAPUI5(latestVersionURL, downloadDir)
@@ -111,7 +105,30 @@ let latestVersionURL = '';
     fs.remove(libDir)
     console.error(error.message)
   }
-
   fs.remove(downloadDir)
-  console.log('Successfully downloaded SAPUI5!')
+  console.log('SAPUI5 successfully installed!')
+}
+
+(async () => {
+  if (!config.version) {
+    latestVersionURL = await determineLatestVersionURL(versionEndpoint, downloadEndpoint)
+  } else {
+    latestVersionURL = url.resolve(downloadEndpoint.href, `sapui5-rt-${config.version}.zip`)
+  }
+  try {
+    const sapUIVersionFile = await fs.readFile(path.resolve(`${libDir}/resources/sap-ui-version.json`))
+    const parsedVersionFile = JSON.parse(sapUIVersionFile.toString('utf8'))
+    const installedSAPUI5VersionURL = url.resolve(downloadEndpoint.href, `sapui5-rt-${parsedVersionFile.version}.zip`)
+    if (installedSAPUI5VersionURL === latestVersionURL) {
+      console.log(`SAPUI5 version ${parsedVersionFile.version} already installed.`)
+    } else {
+      await installSAPUI5()
+    }
+  } catch (readFileError) {
+    if (readFileError.code === 'ENOENT') {
+      await installSAPUI5()
+    } else {
+      throw readFileError
+    }
+  }
 })()
