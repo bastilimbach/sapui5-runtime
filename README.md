@@ -20,12 +20,8 @@ Add the following line to your `package.json`
 
 where `X.Y.Z` is a valid version from [https://tools.hana.ondemand.com/](https://tools.hana.ondemand.com/#sapui5)
 
-Afterwards proceed with the normal installation 
-```bash
-$ npm install -D sapui5-runtime
-# - or -
-$ yarn add -D sapui5-runtime
-```
+Remember to run `npm install` or `yarn install` again after specifing your desired version
+
 # Get started
 After a successful installation you can use a server to serve the runtime as static files.
 

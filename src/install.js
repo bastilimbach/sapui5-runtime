@@ -85,21 +85,21 @@ const versionEndpoint = url.parse('https://sapui5.hana.ondemand.com/resources/sa
 const downloadEndpoint = url.parse('https://tools.hana.ondemand.com/additional/');
 
 (async () => {
-  let latestVersionURL
-  // Check if a specific Version of UI5 is needed..
-  // we are in node_modules/sapui5-runtime/src and need to go down to project using our module
-  const packageJson = fs.readJsonSync(path.join(__dirname, '../../../package.json'), { throws: false })
-
-  if (packageJson && packageJson.sapui5RuntimeVersion) {
-    latestVersionURL = url.resolve(downloadEndpoint.href, `sapui5-rt-${packageJson.sapui5RuntimeVersion}.zip`)
-  }
-
-  prepareFileSystem(libDir, downloadDir)
-
   try {
-    if (!latestVersionURL) {
+    let latestVersionURL
+    // Check if a specific Version of UI5 is needed..
+    // we are in node_modules/sapui5-runtime/src and need to go down to project using our module
+    const config = require(path.join(__dirname, '../../../package.json'))['sapui5-runtime'] || {}
+
+
+    if (!config.version) {
       latestVersionURL = await determineLatestVersionURL(versionEndpoint, downloadEndpoint)
+    } else {
+      latestVersionURL = url.resolve(downloadEndpoint.href, `sapui5-rt-${config.version}.zip`)
     }
+
+    prepareFileSystem(libDir, downloadDir)
+
     const sapui5Archive = await downloadSAPUI5(latestVersionURL, downloadDir)
     await extractArchive(sapui5Archive, libDir)
   } catch (error) {
