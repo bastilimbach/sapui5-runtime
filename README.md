@@ -1,7 +1,7 @@
 # SAPUI5 Runtime
 A package which downloads the official SAPUI5 runtime from [https://tools.hana.ondemand.com/](https://tools.hana.ondemand.com/#sapui5) for local development.
 
-# Installation
+## Installation
 By using this npm package you agree to the EULA from SAP: [https://tools.hana.ondemand.com/developer-license-3_1.txt/](https://tools.hana.ondemand.com/developer-license-3_1.txt/)
 ```bash
 $ npm install -D sapui5-runtime
@@ -10,11 +10,22 @@ $ yarn add -D sapui5-runtime
 ```
 This will download and unzip the latest SAPUI5 runtime.
 
-# Get started
+### Installing a specific version
+In case you need a specific version of SAPUI5 you can specify it in your `package.json`.
+Add the following line to your `package.json`:
+```json
+"sapui5-runtime": {
+  "version": "X.Y.Z"
+}
+```
+You need to repace `X.Y.Z` with a valid version from [https://tools.hana.ondemand.com/](https://tools.hana.ondemand.com/#sapui5).
+Remember to run `npm install` or `yarn install` again after specifing your desired version.
+
+## Get started
 After a successful installation you can use a server to serve the runtime as static files.
 
 
-## [Express](https://github.com/expressjs/express) example
+### [Express](https://github.com/expressjs/express) example
 ```javascript
 const express = require('express')
 const sapui5 = require('sapui5-runtime')
@@ -25,7 +36,7 @@ app.use('/resources', express.static(sapui5))
 app.listen(3000)
 ```
 
-## [Hapi](https://github.com/hapijs/hapi) example
+### [Hapi](https://github.com/hapijs/hapi) example
 ```javascript
 const Hapi = require('hapi')
 const inert = require('inert')
@@ -53,7 +64,7 @@ const init = async () => {
 init()
 ```
 
-## [Grunt OpenUI5](https://github.com/SAP/grunt-openui5) example
+### [Grunt OpenUI5](https://github.com/SAP/grunt-openui5) example
 ```javascript
 const sapui5 = require('sapui5-runtime')
 
@@ -140,11 +151,11 @@ module.exports = function (grunt) {
 }
 ```
 
-# Contribution
+## Contribution
 I'm happy to accept Pull Requests! Please note that this project is released with a [Contributor Code of Conduct](https://github.com/bastilimbach/sapui5-runtime/blob/master/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
-# Credits
+## Credits
 This project was heavily inspired by [openui5.runtime.downloader](https://github.com/maugenst/openui5.runtime.downloader) by [Marius Augenstein](https://github.com/maugenst).
 
-# License
+## License
 [MIT](https://github.com/bastilimbach/sapui5-runtime/blob/master/LICENSE) :heart:

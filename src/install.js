@@ -5,6 +5,10 @@ const AdmZip = require('adm-zip')
 const axios = require('axios')
 const ProgressBar = require('progress')
 
+const packageJSONPath = path.resolve(`${__dirname}/../../../package.json`)
+const packageJSON = require(packageJSONPath)
+const config = packageJSON['sapui5-runtime'] || {}
+
 async function prepareFileSystem(lib, download) {
   await fs.remove(lib)
   fs.mkdirp(lib)
@@ -82,13 +86,19 @@ async function extractArchive(archive, targetPath) {
 const libDir = path.resolve(`${__dirname}/../lib`)
 const downloadDir = path.resolve(`${__dirname}/../tmp`)
 const versionEndpoint = url.parse('https://sapui5.hana.ondemand.com/resources/sap-ui-version.json')
-const downloadEndpoint = url.parse('https://tools.hana.ondemand.com/additional/');
+const downloadEndpoint = url.parse('https://tools.hana.ondemand.com/additional/')
+let latestVersionURL = '';
 
 (async () => {
-  prepareFileSystem(libDir, downloadDir)
-
   try {
-    const latestVersionURL = await determineLatestVersionURL(versionEndpoint, downloadEndpoint)
+    if (!config.version) {
+      latestVersionURL = await determineLatestVersionURL(versionEndpoint, downloadEndpoint)
+    } else {
+      latestVersionURL = url.resolve(downloadEndpoint.href, `sapui5-rt-${config.version}.zip`)
+    }
+
+    prepareFileSystem(libDir, downloadDir)
+
     const sapui5Archive = await downloadSAPUI5(latestVersionURL, downloadDir)
     await extractArchive(sapui5Archive, libDir)
   } catch (error) {

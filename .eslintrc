@@ -12,6 +12,7 @@
             "error",
             "single"
         ],
-        "no-console": "off"
+        "no-console": "off",
+        "import/no-dynamic-require": "off"
     }
 }
