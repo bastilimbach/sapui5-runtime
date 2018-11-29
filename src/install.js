@@ -104,6 +104,7 @@ async function installSAPUI5() {
   } catch (error) {
     fs.remove(libDir)
     console.error(error.message)
+    process.exit(1)
   }
   fs.remove(downloadDir)
   console.log('SAPUI5 successfully installed!')
@@ -128,7 +129,8 @@ async function installSAPUI5() {
     if (readFileError.code === 'ENOENT') {
       await installSAPUI5()
     } else {
-      throw readFileError
+      console.error(readFileError)
+      process.exit(1)
     }
   }
 })()
