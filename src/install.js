@@ -6,8 +6,14 @@ const axios = require('axios')
 const ProgressBar = require('progress')
 
 const packageJSONPath = path.resolve(`${__dirname}/../../../package.json`)
-const packageJSON = require(packageJSONPath)
-const config = packageJSON['sapui5-runtime'] || {}
+let config
+try {
+  const packageJSON = require(packageJSONPath)
+  config = packageJSON['sapui5-runtime'] || {}
+} catch (error) {
+  config = {}
+}
+
 
 async function prepareFileSystem(lib, download) {
   await fs.remove(lib)
