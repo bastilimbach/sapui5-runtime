@@ -52,7 +52,7 @@ async function determineLatestVersionURL(versionEndpoint, downloadEndpoint) {
 
 async function downloadSAPUI5(downloadURL, downloadPath) {
   console.warn('By using this npm package you agree to the EULA from SAP: https://tools.hana.ondemand.com/developer-license-3_1.txt/')
-  console.log('Installing SAPUI5...')
+  console.log('Downloading SAPUI5...')
   const zipFile = path.join(downloadPath, 'sapui5.zip')
   try {
     const response = await axios.get(downloadURL, {
