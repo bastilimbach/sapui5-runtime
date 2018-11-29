@@ -97,7 +97,7 @@ let latestVersionURL = ''
 
 async function installSAPUI5() {
   try {
-    prepareFileSystem(libDir, downloadDir)
+    await prepareFileSystem(libDir, downloadDir)
 
     const sapui5Archive = await downloadSAPUI5(latestVersionURL, downloadDir)
     await extractArchive(sapui5Archive, libDir)
