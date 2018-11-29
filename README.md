@@ -19,7 +19,8 @@ Add the following line to your `package.json`:
 }
 ```
 You need to repace `X.Y.Z` with a valid version from [https://tools.hana.ondemand.com/](https://tools.hana.ondemand.com/#sapui5).
-Remember to run `npm install` or `yarn install` again after specifing your desired version.
+
+If you already added sapui5-runtime to your dependencies you need to run `npm rebuild` after setting a specified version. If you added this setting to your `package.json` before installing the package, you can just install sapui5-runtime as usual.
 
 ## Get started
 After a successful installation you can use a server to serve the runtime as static files.
