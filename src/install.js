@@ -114,9 +114,7 @@ async function downloadSAPUI5(downloadURL, downloadPath) {
             response.data.on('end', () => {
                 resolve(zipFile)
             })
-            response.data.on('error', () => {
-                reject()
-            })
+            response.data.on('error', reject)
         })
     } catch (downloadError) {
         throw new Error(`Couldn't download SAPUI5 zip archive from '${downloadURL}'`)
@@ -161,11 +159,8 @@ async function installSAPUI5() {
     try {
         await prepareFileSystem(libDir, downloadDir)
 
-        await downloadSAPUI5(latestVersionURL, downloadDir).then((sapui5Archive) => {
-            extractArchive(sapui5Archive, libDir)
-        }).catch((error) => {
-            console.log(error.message)
-        })
+        const sapui5Archive = await downloadSAPUI5(latestVersionURL, downloadDir)
+        await extractArchive(sapui5Archive, libDir)
     } catch (error) {
         console.log(error)
         fs.remove(libDir)
