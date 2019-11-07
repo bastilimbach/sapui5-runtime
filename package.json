@@ -28,7 +28,8 @@
     "eslint-plugin-import": "^2.9.0"
   },
   "dependencies": {
-    "adm-zip": "^0.4.7",
+    "node-stream-zip": "^1.8.2",
+    "tunnel": "0.0.6",
     "axios": "^0.18.0",
     "fs-extra": "^5.0.0",
     "progress": "^2.0.0"
