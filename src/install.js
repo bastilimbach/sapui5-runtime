@@ -8,7 +8,7 @@ const ProgressBar = require('progress')
 const tunnel = require('tunnel')
 
 let agent
-if (process.env.HTTPS_PROXY) {
+if (!process.env.HTTPS_PROXY && process.env.HTTP_PROXY ) {
   const httpsProxyObject = process.env.HTTPS_PROXY.split('://')
   const urlString = httpsProxyObject[1]
   const urlArray = urlString.split('@')
