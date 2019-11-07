@@ -8,28 +8,23 @@ const ProgressBar = require('progress')
 const tunnel = require('tunnel')
 
 let agent
-if (!process.env.HTTPS_PROXY && process.env.HTTP_PROXY) {
-    const httpsProxyObject = new Url(process.env.HTTP_PROXY) \
+if (process.env.HTTP_PROXY) {
+    const httpsProxyObject = new URL(process.env.HTTP_PROXY)
     const hostname = httpsProxyObject.hostname
-    const port = httpsProxyObject.port
+	const port = httpsProxyObject.port
+	const _proxy = {
+		host: hostname,
+		port: port,
+	}
     if (httpsProxyObject.username && httpsProxyObject.password) {
         const proxyAuth = httpsProxyObject.username + ':' + httpsProxyObject.password
-        agent = tunnel.httpsOverHttp({
-            proxy: {
-                host: hostname,
-                port,
-                proxyAuth,
-            },
-        })
+		_proxy.proxyAuth = proxyAuth
+         
     }
-    else {
         agent = tunnel.httpsOverHttp({
-            proxy: {
-                host: hostname,
-                port,
-            },
+            proxy: _proxy,
         })
-    }
+    
 }
 const packageJSONPath = path.resolve(`${__dirname}/../../../package.json`)
 let config
@@ -92,6 +87,7 @@ async function downloadSAPUI5(downloadURL, downloadPath) {
         }
 
         if (agent) {
+			console.log('using agent')
             requestConfig.httpsAgent = agent
             requestConfig.proxy = false
         }
@@ -121,7 +117,7 @@ async function downloadSAPUI5(downloadURL, downloadPath) {
     }
 }
 
-async function extractArchive(archive, targetPath) {
+async function extractArchive(archive, targetPath, downloadDir) {
     console.log(`Extracting files to  ${targetPath}`)
 
     const zip = new StreamZip({
@@ -139,14 +135,16 @@ async function extractArchive(archive, targetPath) {
         })
         zip.on('extract', () => {
             progressBar1.tick()
-            if (progressBar1.complete) {
-                console.log('SAPUI5 Installed')
-            }
+            
         })
         zip.extract(null, targetPath, () => {
-            zip.close()
+            zip.close(() => {
+				console.log('SAPUI5 Installed')
+				fs.remove(downloadDir)
+		
+			})
         })
-    })
+	})
 }
 
 const libDir = (config.dest) ? path.resolve(`${__dirname}/../../../`, config.dest) : path.resolve(`${__dirname}/../lib`)
@@ -160,13 +158,13 @@ async function installSAPUI5() {
         await prepareFileSystem(libDir, downloadDir)
 
         const sapui5Archive = await downloadSAPUI5(latestVersionURL, downloadDir)
-        await extractArchive(sapui5Archive, libDir)
+        await extractArchive(sapui5Archive, libDir, downloadDir)
     } catch (error) {
         console.log(error)
         fs.remove(libDir)
         throw error
     }
-    fs.remove(downloadDir)
+   
 }
 
 (async () => {
