@@ -5,10 +5,30 @@ A package which downloads the official SAPUI5 runtime from [https://tools.hana.o
 By using this npm package you agree to the EULA from SAP: [https://tools.hana.ondemand.com/developer-license-3_1.txt/](https://tools.hana.ondemand.com/developer-license-3_1.txt/)
 ```bash
 $ npm install -D sapui5-runtime
-# - or -
+```
+or
+```bash
 $ yarn add -D sapui5-runtime
 ```
 This will download and unzip the latest SAPUI5 runtime.
+
+### Proxy support
+It is possible to use this package behind a proxy by setting the environment variables `HTTP_PROXY` and `HTTPS_PROXY`.
+It is also possible to not set `HTTPS_PROXY`. In this case all HTTPS traffic is tunneled through the provided `HTTP_PROXY`.
+
+###### Linux / macOS
+```bash
+$ export HTTP_PROXY http://hostname:port
+$ export HTTPS_PROXY https://hostname:port
+```
+
+###### Windows
+```bash
+$ set HTTP_PROXY=http://hostname:port
+$ set HTTPS_PROXY=https://hostname:port
+```
+
+> It is also possible to use proxy servers which require authentication: https://username:password@hostname:port
 
 ### Installing a specific version
 In case you need a specific version of SAPUI5 you can specify it in your `package.json`.
@@ -18,9 +38,9 @@ Add the following line to your `package.json`:
   "version": "X.Y.Z"
 }
 ```
-You need to repace `X.Y.Z` with a valid version from [https://tools.hana.ondemand.com/](https://tools.hana.ondemand.com/#sapui5).
+You need to replace `X.Y.Z` with a valid version from [https://tools.hana.ondemand.com/](https://tools.hana.ondemand.com/#sapui5).
 
-If you already added sapui5-runtime to your dependencies you need to run `npm rebuild` after setting a specified version. If you added this setting to your `package.json` before installing the package, you can just install sapui5-runtime as usual.
+**If you already added sapui5-runtime to your dependencies** you need to run `npm rebuild` after setting a specified version. If you added this setting to your `package.json` **before** installing the package, you can just install sapui5-runtime as usual.
 
 ## Get started
 After a successful installation you can use a server to serve the runtime as static files.

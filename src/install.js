@@ -1,9 +1,10 @@
 const fs = require('fs-extra')
 const path = require('path')
 const url = require('url')
-const AdmZip = require('adm-zip')
+const StreamZip = require('node-stream-zip')
 const axios = require('axios')
 const ProgressBar = require('progress')
+const tunnel = require('tunnel')
 
 const packageJSONPath = path.resolve(`${__dirname}/../../../package.json`)
 let config
@@ -24,7 +25,9 @@ async function prepareFileSystem(lib, download) {
 async function determineLatestVersionURL(versionEndpoint, downloadEndpoint) {
   console.log('Searching for latest SAPUI5 version...')
   try {
-    const { data: versionData } = await axios.get(versionEndpoint)
+    const {
+      data: versionData,
+    } = await axios.get(versionEndpoint)
     const patchHistory = [
       ...new Set([...versionData.libraries[0].patchHistory, versionData.version].reverse()),
     ]
@@ -55,14 +58,28 @@ async function downloadSAPUI5(downloadURL, downloadPath) {
   console.log('Downloading SAPUI5...')
   const zipFile = path.join(downloadPath, 'sapui5.zip')
   try {
-    const response = await axios.get(downloadURL, {
+    const requestConfig = {
       responseType: 'stream',
       headers: {
         Cookie: 'eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt',
       },
-    })
+    }
 
-    const progressBar = new ProgressBar('Downloading: [:bar] :rate/bps :percent :etas', {
+    if (process.env.HTTP_PROXY && !process.env.HTTPS_PROXY) {
+      const httpsProxyObject = new URL(process.env.HTTP_PROXY)
+      requestConfig.proxy = false
+      requestConfig.httpsAgent = tunnel.httpsOverHttp({
+        proxy: {
+          host: httpsProxyObject.hostname,
+          port: httpsProxyObject.port,
+          proxyAuth: httpsProxyObject.auth,
+        },
+      })
+    }
+
+    const response = await axios.get(downloadURL, requestConfig)
+
+    const downloadProgressBar = new ProgressBar('Downloading: [:bar] :rate/bps :percent :etas', {
       complete: '=',
       incomplete: ' ',
       width: 20,
@@ -70,23 +87,48 @@ async function downloadSAPUI5(downloadURL, downloadPath) {
     })
 
     response.data.on('data', (data) => {
-      progressBar.tick(data.length)
+      downloadProgressBar.tick(data.length)
     })
 
     response.data.pipe(fs.createWriteStream(zipFile))
     return new Promise((resolve, reject) => {
-      response.data.on('end', () => { resolve(zipFile) })
-      response.data.on('error', () => { reject() })
+      response.data.on('end', () => {
+        resolve(zipFile)
+      })
+      response.data.on('error', reject)
     })
   } catch (downloadError) {
     throw new Error(`Couldn't download SAPUI5 zip archive from '${downloadURL}'`)
   }
 }
 
-async function extractArchive(archive, targetPath) {
-  console.log('Extracting...')
-  const zip = new AdmZip(archive)
-  zip.extractAllTo(targetPath, true)
+async function extractArchive(archive, targetPath, downloadDir) {
+  console.log(`Extracting files to  ${targetPath}`)
+
+  const zip = new StreamZip({
+    file: archive,
+    storeEntries: true,
+  })
+
+  zip.on('ready', () => {
+    const extractionProgressBar = new ProgressBar('Extracting: [:bar] :percent :etas', {
+      complete: '=',
+      incomplete: ' ',
+      width: 20,
+      total: zip.entriesCount,
+    })
+
+    zip.on('extract', () => {
+      extractionProgressBar.tick()
+    })
+
+    zip.extract(null, targetPath, () => {
+      zip.close(() => {
+        fs.remove(downloadDir)
+        console.log('\nSAPUI5 installed')
+      })
+    })
+  })
 }
 
 const libDir = path.resolve(`${__dirname}/../lib`)
@@ -100,13 +142,12 @@ async function installSAPUI5() {
     await prepareFileSystem(libDir, downloadDir)
 
     const sapui5Archive = await downloadSAPUI5(latestVersionURL, downloadDir)
-    await extractArchive(sapui5Archive, libDir)
+    await extractArchive(sapui5Archive, libDir, downloadDir)
   } catch (error) {
+    console.log(error)
     fs.remove(libDir)
     throw error
   }
-  fs.remove(downloadDir)
-  console.log('SAPUI5 successfully installed!')
 }
 
 (async () => {
