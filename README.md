@@ -13,7 +13,8 @@ This will download and unzip the latest SAPUI5 runtime.
 ### Proxy
 If you are using a proxy, the proxy needs to be set as an environment variable. Setting in the node config isn't enough. 
 [Linux / MACOS]
-``` export https_proxy http(s)://username:password@hostname:port```
+``` export http_proxy http://username:password@hostname:port```
+``` export http_proxys https://username:password@hostname:port```
 
 [Windows]
 ``` set https_proxy=http(s)://username:password@hostname:port```
