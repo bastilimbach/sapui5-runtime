@@ -8,21 +8,28 @@ const ProgressBar = require('progress')
 const tunnel = require('tunnel')
 
 let agent
-if (!process.env.HTTPS_PROXY && process.env.HTTP_PROXY ) {
-  const httpsProxyObject = process.env.HTTPS_PROXY.split('://')
-  const urlString = httpsProxyObject[1]
-  const urlArray = urlString.split('@')
-  const proxyAuth = urlArray[0]
-  const hostname = urlArray[1].split(':')[0]
-  const port = urlArray[1].split(':')[1]
-
-  agent = tunnel.httpsOverHttp({
-    proxy: {
-      host: hostname,
-      port,
-      proxyAuth,
-    },
-  })
+if (!process.env.HTTPS_PROXY && process.env.HTTP_PROXY) {
+    const httpsProxyObject = new Url(process.env.HTTP_PROXY) \
+    const hostname = httpsProxyObject.hostname
+    const port = httpsProxyObject.port
+    if (httpsProxyObject.username && httpsProxyObject.password) {
+        const proxyAuth = httpsProxyObject.username + ':' + httpsProxyObject.password
+        agent = tunnel.httpsOverHttp({
+            proxy: {
+                host: hostname,
+                port,
+                proxyAuth,
+            },
+        })
+    }
+    else {
+        agent = tunnel.httpsOverHttp({
+            proxy: {
+                host: hostname,
+                port,
+            },
+        })
+    }
 }
 const packageJSONPath = path.resolve(`${__dirname}/../../../package.json`)
 let config
