@@ -12,17 +12,13 @@ if (process.env.HTTP_PROXY) {
   const httpsProxyObject = new URL(process.env.HTTP_PROXY)
   const { hostname } = httpsProxyObject
   const { port } = httpsProxyObject
-  const proxy = {
-    host: hostname,
-    port,
-  }
-  if (httpsProxyObject.username && httpsProxyObject.password) {
-    const proxyAuth = `${httpsProxyObject.username}:${httpsProxyObject.password}`
-    proxy.proxyAuth = proxyAuth
-  }
   agent = tunnel.httpsOverHttp({
-    proxy,
-  })
+            proxy: {
+              host: httpsProxyObject.hostname,
+              port: httpsProxyObject.port,
+              proxyAuth: httpsProxyObject.auth
+            },
+          })
 }
 const packageJSONPath = path.resolve(`${__dirname}/../../../package.json`)
 let config
