@@ -122,12 +122,12 @@ async function extractArchive(archive, targetPath, downloadDir) {
   zip.on('ready', () => {
     console.log(`All entries read: ${zip.entriesCount}`)
 
-    const progressBar1 = new ProgressBar('Extracting: [:bar]', {
+    const extractionProgressBar = new ProgressBar('Extracting: [:bar]', {
 
       total: zip.entriesCount,
     })
     zip.on('extract', () => {
-      progressBar1.tick()
+      extractionProgressBar.tick()
     })
     zip.extract(null, targetPath, () => {
       zip.close(() => {
