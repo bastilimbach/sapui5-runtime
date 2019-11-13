@@ -138,7 +138,7 @@ async function extractArchive(archive, targetPath, downloadDir) {
   })
 }
 
-const libDir = (config.dest) ? path.resolve(`${__dirname}/../../../`, config.dest) : path.resolve(`${__dirname}/../lib`)
+const libDir = path.resolve(`${__dirname}/../lib`)
 const downloadDir = path.resolve(`${__dirname}/../tmp`)
 const versionEndpoint = url.parse('https://sapui5.hana.ondemand.com/resources/sap-ui-version.json')
 const downloadEndpoint = url.parse('https://tools.hana.ondemand.com/additional/')
