@@ -31,16 +31,6 @@ You need to repace `X.Y.Z` with a valid version from [https://tools.hana.ondeman
 
 If you already added sapui5-runtime to your dependencies you need to run `npm rebuild` after setting a specified version. If you added this setting to your `package.json` before installing the package, you can just install sapui5-runtime as usual.
 
-### Installing to a specific path
-In case you need a specific version of SAPUI5 you can specify it in your `package.json`.
-Add the following line to your `package.json`:
-```json
-"sapui5-runtime": {
-  "dest": "../{target folder}" 
-}
-```
-For example add the path like "dest": "../sapui5-runtime"
-
 ## Get started
 After a successful installation you can use a server to serve the runtime as static files.
 
