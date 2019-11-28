@@ -14,7 +14,6 @@ This will download and unzip the latest SAPUI5 runtime.
 
 ### Proxy support
 It is possible to use this package behind a proxy by setting the environment variables `HTTP_PROXY` and `HTTPS_PROXY`.
-It is also possible to not set `HTTPS_PROXY`. In this case all HTTPS traffic is tunneled through the provided `HTTP_PROXY`.
 
 ###### Linux / macOS
 ```bash
